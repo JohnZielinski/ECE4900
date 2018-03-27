@@ -1,0 +1,9 @@
+Uses Time and TimeAlarm libraries
+
+Set the current time (Input from the GUI)
+Set Schedule for pill 1
+	Wait for input from gui
+		for days of week entered
+			Alarm.alarmRepeat(dayofweek, hours, minutes, seconds, function);
+		where function is a call to dispense pill
+	
