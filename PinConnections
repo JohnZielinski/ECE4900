@@ -6,3 +6,5 @@ MISO connects to SPI MISO. Digital 12
 MOSI connects to SPI MOSI. Digital 11.
 CS connects to our SPI Chip Select pin. Digital 10 (Can change this)
 D/C connects to our SPI data/command select pin. Digital 9 (Can Change this)
+Connect the SCL pin to the I2C clock SCL pin. A5
+Connect the SDA pin to the I2C data SDA pin . A4
