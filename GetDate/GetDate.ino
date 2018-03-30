@@ -75,10 +75,12 @@ void loop() {
 
     // Retrieve a point  
   TS_Point p = ctp.getPoint();
-
+  TS_Point temp;
     // flip it around to match the screen.
-  p.x = map(p.x, 0, 240, 240, 0);
-  p.y = map(p.y, 0, 320, 320, 0);
+  temp.y = map(p.x, 0, 240, 240, 0);
+  temp.x = map(p.y, 0, 320, 0, 320);
+  p.x = temp.x;
+  p.y = temp.y;
 
   // Print out the remapped (rotated) coordinates
   Serial.print("("); Serial.print(p.x);
