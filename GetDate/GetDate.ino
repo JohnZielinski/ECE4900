@@ -12,13 +12,24 @@ Adafruit_FT6206 ctp = Adafruit_FT6206();
 #define TFT_DC 9
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
+// Function Prototypes
+TS_Point getMappedPoint();
+char getInputButtonValue();
+
 // Size of the color selection boxes and the paintbrush size
 #define NUMPADBOXSIZE 320/5
 #define DAYBOXSIZE 320/8
-#define PENRADIUS 3
 #define NUMTEXTSIZE 3
 #define TEXTSIZE 2
-int oldcolor, currentcolor;
+
+// x-min, x-max, y-min, y-max, value
+int keypad[18][5] = {
+  {0, NUMPADBOXSIZE, 240 - NUMPADBOXSIZE, 240, '5'},
+  {NUMPADBOXSIZE, 2 * NUMPADBOXSIZE, 240 - NUMPADBOXSIZE, 240, '6'},
+  {2 * NUMPADBOXSIZE, 3 * NUMPADBOXSIZE, 240 - NUMPADBOXSIZE, 240, '7'},
+  {3 * NUMPADBOXSIZE, 4 * NUMPADBOXSIZE, 240 - NUMPADBOXSIZE, 240, '8'},
+  {4 * NUMPADBOXSIZE, 5 * NUMPADBOXSIZE, 240 - NUMPADBOXSIZE, 240, '9'}
+};
 
 void setup() {
   Serial.begin(115200);
@@ -45,13 +56,13 @@ void setup() {
   // make keypad selection boxes
   for(int i = 0; i < 5; i++){
     // Draw 0-4
-    tft.drawRect(NUMPADBOXSIZE*(i), 240-NUMPADBOXSIZE*2, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-    tft.setCursor(NUMPADBOXSIZE*(i)+(NUMPADBOXSIZE/2-NUMTEXTSIZE/2), 240-NUMPADBOXSIZE*2+(NUMPADBOXSIZE/2));
+    tft.drawRect(NUMPADBOXSIZE * i, 240 - (NUMPADBOXSIZE * 2), NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
+    tft.setCursor(NUMPADBOXSIZE * i + (NUMPADBOXSIZE / 2 - NUMTEXTSIZE / 2), 240 - NUMPADBOXSIZE * 2 + (NUMPADBOXSIZE / 2));
     tft.println(i);
     // Draw 5-9
-    tft.drawRect(NUMPADBOXSIZE*(i), 240-NUMPADBOXSIZE, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-    tft.setCursor(NUMPADBOXSIZE*(i)+(NUMPADBOXSIZE/2-NUMTEXTSIZE/2), 240-NUMPADBOXSIZE+(NUMPADBOXSIZE/2));
-    tft.println(i+4);
+    tft.drawRect(NUMPADBOXSIZE * i, 240 - NUMPADBOXSIZE, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
+    tft.setCursor(NUMPADBOXSIZE * i + (NUMPADBOXSIZE / 2 - NUMTEXTSIZE / 2), 240 - NUMPADBOXSIZE +(NUMPADBOXSIZE / 2));
+    tft.println(i + 5);
   }
   
   // make day selection boxes, plus DEL box
@@ -73,6 +84,13 @@ void loop() {
     return;
   }
 
+  char input = getInputButtonValue();
+  Serial.print("Key Touched: "); Serial.println(input);
+  delay(1000);
+}
+
+
+TS_Point getMappedPoint(){
     // Retrieve a point  
   TS_Point p = ctp.getPoint();
   TS_Point temp;
@@ -81,50 +99,22 @@ void loop() {
   temp.x = map(p.y, 0, 320, 0, 320);
   p.x = temp.x;
   p.y = temp.y;
-
-  // Print out the remapped (rotated) coordinates
   Serial.print("("); Serial.print(p.x);
   Serial.print(", "); Serial.print(p.y);
   Serial.println(")");
-    if (p.y < NUMPADBOXSIZE) {
-     oldcolor = currentcolor;
-
-     if (p.x < NUMPADBOXSIZE) { 
-       currentcolor = ILI9341_RED; 
-       tft.drawRect(0, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-     } else if (p.x < NUMPADBOXSIZE*2) {
-       currentcolor = ILI9341_YELLOW;
-       tft.drawRect(NUMPADBOXSIZE, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-     } else if (p.x < NUMPADBOXSIZE*3) {
-       currentcolor = ILI9341_GREEN;
-       tft.drawRect(NUMPADBOXSIZE*2, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-     } else if (p.x < NUMPADBOXSIZE*4) {
-       currentcolor = ILI9341_CYAN;
-       tft.drawRect(NUMPADBOXSIZE*3, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-     } else if (p.x < NUMPADBOXSIZE*5) {
-       currentcolor = ILI9341_BLUE;
-       tft.drawRect(NUMPADBOXSIZE*4, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-     } else if (p.x <= NUMPADBOXSIZE*6) {
-       currentcolor = ILI9341_MAGENTA;
-       tft.drawRect(NUMPADBOXSIZE*5, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_WHITE);
-     }
-
-     if (oldcolor != currentcolor) {
-        if (oldcolor == ILI9341_RED) 
-          tft.fillRect(0, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_RED);
-        if (oldcolor == ILI9341_YELLOW) 
-          tft.fillRect(NUMPADBOXSIZE, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_YELLOW);
-        if (oldcolor == ILI9341_GREEN) 
-          tft.fillRect(NUMPADBOXSIZE*2, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_GREEN);
-        if (oldcolor == ILI9341_CYAN) 
-          tft.fillRect(NUMPADBOXSIZE*3, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_CYAN);
-        if (oldcolor == ILI9341_BLUE) 
-          tft.fillRect(NUMPADBOXSIZE*4, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_BLUE);
-        if (oldcolor == ILI9341_MAGENTA) 
-          tft.fillRect(NUMPADBOXSIZE*5, 0, NUMPADBOXSIZE, NUMPADBOXSIZE, ILI9341_MAGENTA);
-     }
-  }
-  if (((p.y-PENRADIUS) > NUMPADBOXSIZE) && ((p.y+PENRADIUS) < tft.height())) {
-    tft.fillCircle(p.x, p.y, PENRADIUS, currentcolor);
-  }
+  return p;
 }
+
+char getInputButtonValue(){
+  TS_Point p = getMappedPoint();
+    for (int i = 0; i<18;i++){
+      if ( p.x > keypad[i][0] && p.x < keypad[i][1] && p.y > keypad[i][2] && p.y < keypad[i][3])
+      {
+        return(keypad[i][4]);
+      }
+    }
+}
+
+
+
+
