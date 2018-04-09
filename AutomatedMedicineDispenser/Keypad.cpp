@@ -80,7 +80,7 @@ int getInputValue(Adafruit_FT6206 ctp){
     }
 }
 
-int getNumFromKeypad(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, String str){
+int getNumFromKeypad(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, String str1, String str2){
   boolean entered = false;
   String numString = "";
   while(!entered){
@@ -88,8 +88,10 @@ int getNumFromKeypad(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, String str){
     tft.fillScreen(ILI9341_BLACK);
     tft.setTextSize(NUMTEXTSIZE - 1);
     tft.setCursor(0,0);
-    tft.println("Please enter the current");
-    tft.print(str + ": ");
+    
+    tft.println(str1);
+    tft.print(str2 + ": ");
+
     drawKeyboard(tft);
     tft.print(numString);
     int input = getInputValue(ctp);

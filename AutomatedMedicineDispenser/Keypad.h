@@ -8,4 +8,4 @@
 TS_Point getMappedPoint(Adafruit_FT6206 ctp);
 char getInputValue(Adafruit_FT6206 ctp);
 void drawKeyboard(Adafruit_ILI9341 tft);
-int getNumFromKeypad(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, String str);
+int getNumFromKeypad(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, String str1, String str2);
