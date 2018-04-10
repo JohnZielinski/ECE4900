@@ -15,18 +15,17 @@ Adafruit_FT6206 ctp = Adafruit_FT6206();
 #define TFT_DC 9
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
 
-/*
-class Prescription {
-  boolean days[7]; //Days per week to take prescription
-  int hour; //Hour to take prescription
-  int minute; //Minute to take prescription
-};
-*/ 
+int pillNum[4] = {0}; // The number of pills to dispense for each pill type
 
 void setCurrentDateTime(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp);
 void digitalClockDisplay();
 void printDigits(int digits);
-void printAlarm();
+void printAlarm(String str);
+void setAlarm(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, int pill);
+void alarm1();
+void alarm2();
+void alarm3();
+void alarm4();
 
 
 void setup() {
@@ -46,13 +45,12 @@ void setup() {
   tft.fillScreen(ILI9341_BLACK);
   setCurrentDateTime(tft, ctp);
   tft.fillScreen(ILI9341_BLACK);
+  for( int i = 0; i < sizeof(pillNum)/sizeof(int); i++){
+    setAlarm(tft, ctp, i);
+  }
 }
 
 void loop() {
-  if((second() != 0 )&& (second() % 7 == 0)){
-    Serial.println("Alarm Set");
-    Alarm.alarmRepeat(hour(), minute(), second()+10, printAlarm);
-  }
   digitalClockDisplay();
   Alarm.delay(1000);
 }
@@ -71,13 +69,29 @@ void setCurrentDateTime(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp){
   setTime(dateTimeData[3], dateTimeData[4], 0, dateTimeData[2], dateTimeData[1], dateTimeData[0]);
 }
 
+void setAlarm(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, int pill){
+  String pillStr = "Pill " + String(pill);
+  int alarmHour = getNumFromKeypad(tft, ctp, "Enter the hour for", pillStr);
+  int alarmMinute = getNumFromKeypad(tft, ctp, "Enter the minute for", pillStr);
+  pillNum[pill] = getNumFromKeypad(tft, ctp, "How many pills for ", pillStr);
+  if ( pill == 0 ){
+    Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm0);
+  } else if( pill == 1){
+    Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm1);
+  } else if( pill == 2){
+    Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm2);
+  } else {
+    Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm3);
+  }
+}
+
 // Print the current time to serial
 void digitalClockDisplay(){
   // digital clock display of the time
   Serial.print(hour());
   printDigits(minute());
   printDigits(second());
-  Serial.println(); 
+  Serial.println();
 }
 
 void printDigits(int digits){
@@ -89,7 +103,26 @@ void printDigits(int digits){
   Serial.print(digits);
 }
 
-void printAlarm(){
-  Serial.println("An Alarm is going off");
+void printAlarm(String str){
+  Serial.print("An Alarm for ");
+  Serial.print(str);
+  Serial.println(" is going off");
+}
+
+void alarm0(){
+  printAlarm("Pill 0");
+  //dispense0(pillNum[0]);
+}
+void alarm1(){
+  printAlarm("Pill 1");
+  //dispense1(pillNum[1]);
+}
+void alarm2(){
+  printAlarm("Pill 2");
+  //dispense2(pillNum[2]);
+}
+void alarm3(){
+  printAlarm("Pill 3");
+  //dispense3(pillNum[3]);
 }
 
