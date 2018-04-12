@@ -6,6 +6,7 @@
 #include <Wire.h>      // this is needed for FT6206
 #include <Adafruit_FT6206.h>
 #include "Keypad.h"
+#include "Dispense.h"
 
 // The FT6206 uses hardware I2C (SCL/SDA)
 Adafruit_FT6206 ctp = Adafruit_FT6206();
@@ -27,8 +28,22 @@ void alarm2();
 void alarm3();
 void alarm4();
 
+int laser_in = 2; //set input data pin
+Servo servo0; Servo servo1; Servo servo2; Servo servo3;
+
 
 void setup() {
+  //Set up laser and servos
+  pinMode(laser_in, INPUT);
+  servo0.attach(9);
+  servo0.write(0);
+  servo1.attach(10);
+  servo1.write(0);
+  servo2.attach(11);
+  servo2.write(0);
+  servo3.attach(12);
+  servo0.write(0);
+  
   Serial.begin(115200);
   Serial.println(F("Get Current Date"));
   
@@ -111,18 +126,18 @@ void printAlarm(String str){
 
 void alarm0(){
   printAlarm("Pill 0");
-  //dispense0(pillNum[0]);
+  dispense(servo0, pillNum[0], laser_in);
 }
 void alarm1(){
   printAlarm("Pill 1");
-  //dispense1(pillNum[1]);
+  dispense(servo1, pillNum[1], laser_in);
 }
 void alarm2(){
   printAlarm("Pill 2");
-  //dispense2(pillNum[2]);
+  dispense(servo2, pillNum[2], laser_in);
 }
 void alarm3(){
   printAlarm("Pill 3");
-  //dispense3(pillNum[3]);
+  dispense(servo3, pillNum[3], laser_in);
 }
 

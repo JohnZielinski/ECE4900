@@ -1,7 +1,7 @@
 #include <Servo.h>
 
 Servo servo;
-int pos =0;
+int pos = 0;
 int laser_din=2; //set input data pin
 int count;
 int tick=0;
