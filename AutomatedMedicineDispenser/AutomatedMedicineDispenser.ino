@@ -28,13 +28,11 @@ void alarm2();
 void alarm3();
 void alarm4();
 
-int laser_in = 2; //set input data pin
 Servo servo0; Servo servo1; Servo servo2; Servo servo3;
 
 
 void setup() {
-  //Set up laser and servos
-  pinMode(laser_in, INPUT);
+  //Set up servos
   servo0.attach(9);
   servo0.write(0);
   servo1.attach(10);
@@ -126,18 +124,18 @@ void printAlarm(String str){
 
 void alarm0(){
   printAlarm("Pill 0");
-  dispense(servo0, pillNum[0], laser_in);
+  dispense(servo0, pillNum[0]);
 }
 void alarm1(){
   printAlarm("Pill 1");
-  dispense(servo1, pillNum[1], laser_in);
+  dispense(servo1, pillNum[1]);
 }
 void alarm2(){
   printAlarm("Pill 2");
-  dispense(servo2, pillNum[2], laser_in);
+  dispense(servo2, pillNum[2]);
 }
 void alarm3(){
   printAlarm("Pill 3");
-  dispense(servo3, pillNum[3], laser_in);
+  dispense(servo3, pillNum[3]);
 }
 
