@@ -4,7 +4,7 @@
 #include <TimeAlarms.h>
 
 void dispense(Servo servo, int numPills, int buzzerPin){
-  tone(buzzerPin, 2300, 5000);
+  tone(buzzerPin, 1500, 5000);
   for (int i = 0; i < numPills; i++) {
     // Shake the gear at the bottom to make sure a pill is in
     for (int j = 0; j < 5; j++){

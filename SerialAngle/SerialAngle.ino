@@ -5,7 +5,7 @@ int pos = 0;
 int speed = 5;
 
 void setup() {
-  servo.attach(3);
+  servo.attach(9);
   Serial.begin(9600);
 
 }

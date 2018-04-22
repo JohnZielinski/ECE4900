@@ -30,8 +30,9 @@ void alarm4();
 
 Servo servo0; Servo servo1; Servo servo2; Servo servo3;
 
-// pin for the piezo buzzer
+// Pin for Piezo buzzer
 #define PIEZO 13
+
 
 void setup() {
   //Set up servos
@@ -74,6 +75,7 @@ void loop() {
 }
 
 void setCurrentDateTime(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp){
+  /*
   String thingsToGet[5] = {
     "year", "month", "day", "hour", "minute"
   };
@@ -83,22 +85,33 @@ void setCurrentDateTime(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp){
     dateTimeData[i] = getNumFromKeypad(tft, ctp, request, thingsToGet[i]);
     Serial.print(thingsToGet[i]); Serial.println(dateTimeData[i]);
   }
+  */
+    int dateTimeData[5] = {2018, 4, 1, 12, 0}; // hardcode
   // set the current time. This is out of order since setTime takes hours, minutes, seconds, days, months, year
   setTime(dateTimeData[3], dateTimeData[4], 0, dateTimeData[2], dateTimeData[1], dateTimeData[0]);
 }
 
 void setAlarm(Adafruit_ILI9341 tft, Adafruit_FT6206 ctp, int pill){
   String pillStr = "Pill " + String(pill);
+
+  /* Hard coding for testing
   int alarmHour = getNumFromKeypad(tft, ctp, "Enter the hour for", pillStr);
   int alarmMinute = getNumFromKeypad(tft, ctp, "Enter the minute for", pillStr);
   pillNum[pill] = getNumFromKeypad(tft, ctp, "How many pills for ", pillStr);
+  */
+  int alarmHour = 12;
+  pillNum[pill] = 3;
   if ( pill == 0 ){
+    int alarmMinute = 1;
     Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm0);
   } else if( pill == 1){
+    int alarmMinute = 1;
     Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm1);
   } else if( pill == 2){
+    int alarmMinute = 3;
     Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm2);
   } else {
+    int alarmMinute = 4;
     Alarm.alarmRepeat(alarmHour, alarmMinute, 0, alarm3);
   }
 }
@@ -134,7 +147,6 @@ void printAlarm(String str){
   Serial.print(str);
   Serial.println(" is going off");
 }
-
 
 void alarm0(){
   printAlarm("Pill 0");
